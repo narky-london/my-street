@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Street — Friern Barnet</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1917;
+    --paper: #ffffff;
+    --cream: #f4f1eb;
+    --accent: #c0391a;
+    --accent2: #1a4f7a;
+    --muted: #595550;
+    --line: rgba(0,0,0,0.1);
+    --green: #1e5c36;
+    --green-bg: #e6f4ec;
+    --amber: #8a5a00;
+    --amber-bg: #fef3d0;
+    --red: #b5260e;
+    --red-bg: #fdecea;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    border-bottom: 3px double var(--ink);
+    padding: 16px 20px 12px;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    background: var(--cream);
+  }
+  .masthead-title { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .masthead h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 6vw, 3rem);
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .masthead h1 em { color: var(--accent); font-style: italic; }
+  .area-tag {
+    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); border: 1px solid rgba(0,0,0,0.2); padding: 3px 10px;
+    background: white;
+  }
+  .masthead-meta { text-align: right; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); line-height: 1.8; }
+  #live-clock { font-size: 1.1rem; font-weight: 500; color: var(--ink); display: block; }
+
+  /* ── STATUS TICKER ── */
+  .ticker {
+    background: var(--ink); color: #ffffff;
+    padding: 9px 20px; display: flex; align-items: center; gap: 12px;
+    font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; overflow: hidden;
+  }
+  .ticker-label { flex-shrink: 0; color: #ff8c6b; font-weight: 500; }
+  .ticker-scroll { flex: 1; white-space: nowrap; overflow: hidden; }
+  .ticker-inner { display: inline-block; animation: ticker 30s linear infinite; }
+  @keyframes ticker { from{transform:translateX(100%)} to{transform:translateX(-100%)} }
+  #ticker-text { display: inline; }
+
+  /* ── MAIN LAYOUT ── */
+  .layout { display: flex; flex-direction: column; }
+  @media(min-width: 700px) {
+    .layout { display: grid; grid-template-columns: 2fr 1fr; min-height: calc(100vh - 110px); }
+    .col-left { border-right: 2px solid var(--line); }
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-head {
+    padding: 12px 20px 10px; border-bottom: 2px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--cream);
+  }
+  .section-head h2 {
+    font-family: 'DM Serif Display', serif; font-size: 1.15rem; color: var(--ink);
+  }
+  .badge {
+    font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); display: flex; align-items: center; gap: 6px;
+  }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #2e9e50; animation: blink 2s infinite; flex-shrink: 0; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── SHARED ROW PATTERN ── */
+  .data-list { padding: 0; }
+  .data-row {
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--line);
+    border-left: 4px solid transparent;
+    display: flex; align-items: center; gap: 14px;
+    background: #ffffff;
+    transition: background 0.15s, border-left-color 0.15s;
+  }
+  .data-row:hover { border-left-color: var(--accent2); background: #f7fafd; }
+  .data-row:last-child { border-bottom: none; }
+  .row-icon { font-size: 1.2rem; width: 30px; text-align: center; flex-shrink: 0; }
+  .row-body { flex: 1; min-width: 0; }
+  .row-primary { font-size: 0.92rem; font-weight: 600; color: #1a1917; letter-spacing: 0.01em; }
+  .row-secondary { font-size: 0.75rem; color: #595550; letter-spacing: 0.02em; margin-top: 2px; }
+  .row-aside { flex-shrink: 0; text-align: right; }
+
+  /* ── BUS STOP SUBHEADER ── */
+  .stop-block { border-bottom: 2px solid var(--line); }
+  .stop-block:last-child { border-bottom: none; }
+  .stop-header {
+    padding: 10px 20px 8px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: #f4f1eb; border-bottom: 1px solid var(--line);
+    border-left: 4px solid var(--accent2);
+  }
+  .stop-code {
+    background: var(--accent2); color: #ffffff;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em;
+    padding: 3px 10px; border-radius: 2px; flex-shrink: 0;
+  }
+  .stop-name { font-size: 0.85rem; font-weight: 600; color: var(--ink); letter-spacing: 0.02em; }
+  .stop-routes { display: flex; gap: 5px; margin-left: auto; flex-wrap: wrap; }
+  .route-pill {
+    font-size: 0.7rem; font-weight: 500; letter-spacing: 0.04em;
+    padding: 2px 8px; border: 1.5px solid var(--accent2);
+    background: white; color: var(--accent2); border-radius: 2px;
+  }
+
+  /* ── TIME BADGES ── */
+  .time-badge {
+    font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em;
+    padding: 3px 10px; border-radius: 3px; white-space: nowrap;
+  }
+  .time-badge.due  { background: var(--red-bg);   color: var(--red); }
+  .time-badge.soon { background: var(--amber-bg);  color: var(--amber); }
+  .time-badge.ok   { background: var(--green-bg);  color: var(--green); }
+
+  /* ── STATUS BADGES ── */
+  .status-badge {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 3px; white-space: nowrap;
+  }
+  .status-good   { background: var(--green-bg); color: var(--green); }
+  .status-minor  { background: var(--amber-bg); color: var(--amber); }
+  .status-severe { background: var(--red-bg);   color: var(--red); }
+
+  /* ── WEATHER SUMMARY ── */
+  .weather-summary {
+    padding: 16px 20px 12px;
+    display: flex; align-items: center; gap: 14px;
+    background: #ffffff; border-bottom: 1px solid var(--line);
+    border-left: 4px solid transparent;
+  }
+  .weather-icon { font-size: 2rem; width: 30px; text-align: center; flex-shrink: 0; }
+  .weather-temp { font-family: 'DM Serif Display', serif; font-size: 2.2rem; line-height: 1; color: #1a1917; }
+  .weather-desc { font-size: 0.75rem; color: #595550; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 3px; }
+
+  /* ── LOADING / ERROR ── */
+  .stop-loading { padding: 14px 20px; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.04em; }
+  .stop-error { padding: 12px 16px; color: var(--red); font-size: 0.8rem; background: var(--red-bg); margin: 8px 20px; border-radius: 3px; }
+  .no-disruptions { padding: 12px 16px; font-size: 0.8rem; color: var(--green); background: var(--green-bg); margin: 8px 20px; border-radius: 3px; }
+
+  /* ── RIGHT COLUMN ── */
+  .right-panel { border-bottom: 2px solid var(--line); }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 2px solid var(--line); padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+    background: var(--cream);
+  }
+  .refresh-btn {
+    background: var(--ink); color: #ffffff; border: none;
+    padding: 8px 18px; font-family: 'Inter', sans-serif; font-size: 0.72rem;
+    letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+    transition: background 0.2s; border-radius: 2px; min-height: 36px;
+  }
+  .refresh-btn:hover { background: #3a3836; }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-title">
+    <h1>My <em>Street</em></h1>
+    <span class="area-tag">Friern Barnet · N12</span>
+  </div>
+  <div class="masthead-meta">
+    <span id="live-clock">--:--:--</span>
+    <span>Live Local Dashboard</span>
+    <span>London Borough of Barnet</span>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker">
+  <span class="ticker-label">▶ Status</span>
+  <div class="ticker-scroll">
+    <div class="ticker-inner">
+      <span id="ticker-text">Loading service information…</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT: BUSES + LINE STATUS -->
+  <div class="col-left">
+
+    <div class="section-head">
+      <h2>Bus Arrivals</h2>
+      <div class="badge"><span class="live-dot"></span> Live TfL Data</div>
+    </div>
+    <div id="bus-container">
+      <div class="stop-loading">Loading bus arrivals…</div>
+    </div>
+
+    <div class="section-head">
+      <h2>Line Status</h2>
+      <div class="badge">Nearby lines</div>
+    </div>
+    <div class="data-list" id="tube-container">
+      <div class="stop-loading">Loading line status…</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: WEATHER + STATIONS + DISRUPTIONS -->
+  <div class="col-right">
+
+    <div class="right-panel">
+      <div class="section-head">
+        <h2>Weather</h2>
+        <div class="badge">Friern Barnet · N12</div>
+      </div>
+      <div id="weather-container">
+        <div class="stop-loading">Loading weather…</div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="section-head">
+        <h2>Nearest Stations</h2>
+        <div class="badge">Walking distance</div>
+      </div>
+      <div class="data-list">
+        <div class="data-row">
+          <div class="row-icon">🚆</div>
+          <div class="row-body">
+            <div class="row-primary">New Southgate</div>
+            <div class="row-secondary">National Rail · ~12 min walk</div>
+          </div>
+        </div>
+        <div class="data-row">
+          <div class="row-icon">🚇</div>
+          <div class="row-body">
+            <div class="row-primary">Arnos Grove</div>
+            <div class="row-secondary">Piccadilly line · ~15 min walk</div>
+          </div>
+        </div>
+        <div class="data-row">
+          <div class="row-icon">🚇</div>
+          <div class="row-body">
+            <div class="row-primary">Bounds Green</div>
+            <div class="row-secondary">Piccadilly line · ~18 min walk</div>
+          </div>
+        </div>
+        <div class="data-row">
+          <div class="row-icon">🚇</div>
+          <div class="row-body">
+            <div class="row-primary">Highgate</div>
+            <div class="row-secondary">Northern line · Bus 43 direct</div>
+          </div>
+        </div>
+        <div class="data-row">
+          <div class="row-icon">🚆</div>
+          <div class="row-body">
+            <div class="row-primary">Alexandra Palace</div>
+            <div class="row-secondary">Thameslink · ~20 min walk</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="section-head">
+        <h2>Disruptions</h2>
+        <div class="badge"><span class="live-dot"></span> Live</div>
+      </div>
+      <div id="disruption-container">
+        <div class="stop-loading">Checking for disruptions…</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>Data: TfL Open Data · Open-Meteo · London Datastore</span>
+  <span id="last-updated">—</span>
+  <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
+</div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+const STOPS = [
+  { id: '490007029S',  code: 'FD', name: 'Friern Barnet Road', routes: ['43','134','234','634'] },
+  { id: '490007030E1', code: 'FX', name: 'Friern Barnet Lane', routes: ['43','SL1'] },
+];
+
+const LINES = [
+  { id: 'piccadilly', name: 'Piccadilly', color: '#003688', stations: 'Arnos Grove · Bounds Green' },
+  { id: 'northern',   name: 'Northern',  color: '#1a1917', stations: 'Highgate · East Finchley',  border: true },
+  { id: 'victoria',   name: 'Victoria',  color: '#0098D4', stations: 'via Central London' },
+  { id: 'elizabeth',  name: 'Elizabeth', color: '#6950a1', stations: 'via Tottenham Court Rd' },
+];
+
+const LAT = 51.613, LON = -0.158;
+
+// ─── CLOCK ───────────────────────────────────────────────────────────────────
+function updateClock() {
+  document.getElementById('live-clock').textContent =
+    new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ─── BUS ARRIVALS ─────────────────────────────────────────────────────────────
+async function loadBusStop(stop) {
+  try {
+    const res = await fetch(`/api/arrivals?stopId=${stop.id}`);
+    if (!res.ok) throw new Error();
+    const arrivals = await res.json();
+    arrivals.sort((a, b) => a.timeToStation - b.timeToStation);
+    const top = arrivals.slice(0, 4);
+    if (top.length === 0) return `<div class="stop-loading">No arrivals in next 30 mins</div>`;
+    return `<div class="data-list">${top.map(a => {
+      const mins = Math.round(a.timeToStation / 60);
+      const label = mins <= 1 ? 'Due' : `${mins} min`;
+      const cls = mins <= 1 ? 'due' : mins <= 5 ? 'soon' : 'ok';
+      return `<div class="data-row">
+        <div class="row-icon" style="font-family:'DM Serif Display',serif;font-size:1.2rem;font-weight:700;color:var(--accent2);">${a.lineName}</div>
+        <div class="row-body">
+          <div class="row-primary">${a.towards || a.destinationName}</div>
+          <div class="row-secondary">${a.destinationName !== (a.towards || '') ? a.destinationName : 'towards destination'}</div>
+        </div>
+        <div class="row-aside"><span class="time-badge ${cls}">${label}</span></div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e) {
+    return `<div class="stop-error">⚠ Could not load arrivals</div>`;
+  }
+}
+
+async function loadBuses() {
+  const container = document.getElementById('bus-container');
+  container.innerHTML = '';
+  for (const stop of STOPS) {
+    const block = document.createElement('div');
+    block.className = 'stop-block';
+    block.innerHTML = `
+      <div class="stop-header">
+        <span class="stop-code">${stop.code}</span>
+        <span class="stop-name">${stop.name}</span>
+        <div class="stop-routes">${stop.routes.map(r => `<span class="route-pill">${r}</span>`).join('')}</div>
+      </div>
+      <div class="stop-loading">Loading…</div>`;
+    container.appendChild(block);
+    const html = await loadBusStop(stop);
+    block.querySelector('.stop-loading').outerHTML = html;
+  }
+}
+
+// ─── LINE STATUS ──────────────────────────────────────────────────────────────
+async function loadTubeStatus() {
+  const container = document.getElementById('tube-container');
+  try {
+    const ids = LINES.map(l => l.id).join(',');
+    const res = await fetch(`/api/lines?ids=${ids}`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    const tickerParts = [];
+    let html = '';
+
+    for (const line of data) {
+      const meta = LINES.find(l => l.id === line.id) || { color: '#999', stations: '' };
+      const status = line.lineStatuses?.[0];
+      const desc = status?.statusSeverityDescription || 'Unknown';
+      const isGood = desc === 'Good Service';
+      const isBad = ['Suspended','Part Suspended','Severe Delays'].some(s => desc.includes(s.split(' ')[0]));
+      const isMinor = !isGood && !isBad;
+      const cls = isBad ? 'status-severe' : isMinor ? 'status-minor' : 'status-good';
+      const border = meta.color === '#1a1917' ? 'border:1px solid #ccc;' : '';
+
+      html += `<div class="data-row">
+        <div class="row-icon"><div style="width:18px;height:18px;border-radius:50%;background:${meta.color};${border}margin:auto;"></div></div>
+        <div class="row-body">
+          <div class="row-primary">${line.name} line</div>
+          <div class="row-secondary">${meta.stations}</div>
+        </div>
+        <div class="row-aside"><span class="status-badge ${cls}">${desc}</span></div>
+      </div>`;
+
+      if (!isGood) tickerParts.push(`${line.name}: ${desc}`);
+    }
+
+    container.innerHTML = html;
+
+    const disruptions = document.getElementById('disruption-container');
+    if (tickerParts.length === 0) {
+      document.getElementById('ticker-text').textContent =
+        '✓ All monitored lines running normally  ·  No disruptions near Friern Barnet  ·  Refreshes every 60s';
+      disruptions.innerHTML = '<div class="no-disruptions">✓ No disruptions on monitored lines</div>';
+    } else {
+      document.getElementById('ticker-text').textContent = tickerParts.join('  ·  ');
+      disruptions.innerHTML = `<div class="data-list">${tickerParts.map(t => {
+        const [route, ...rest] = t.split(': ');
+        const severe = rest.join('').toLowerCase().includes('suspend') || rest.join('').toLowerCase().includes('severe');
+        return `<div class="data-row">
+          <div class="row-icon">${severe ? '🚨' : '⚠️'}</div>
+          <div class="row-body">
+            <div class="row-primary">${route} line</div>
+            <div class="row-secondary">${rest.join('')}</div>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+    }
+  } catch(e) {
+    container.innerHTML = `<div class="stop-error">⚠ Could not load line status</div>`;
+  }
+}
+
+// ─── WEATHER ──────────────────────────────────────────────────────────────────
+async function loadWeather() {
+  const container = document.getElementById('weather-container');
+  try {
+    const url = `/api/weather?lat=${LAT}&lon=${LON}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const c = data.current;
+
+    const icons = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'🌨',75:'❄️',80:'🌦',81:'🌧',82:'⛈',95:'⛈',96:'⛈',99:'⛈'};
+    const descs = {0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Showers',81:'Rain showers',82:'Heavy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'};
+
+    const icon = icons[c.weather_code] || '🌡';
+    const desc = descs[c.weather_code] || 'Variable';
+
+    container.innerHTML = `
+      <div class="weather-summary">
+        <div class="weather-icon">${icon}</div>
+        <div>
+          <div class="weather-temp">${Math.round(c.temperature_2m)}°C</div>
+          <div class="weather-desc">${desc}</div>
+        </div>
+      </div>
+      <div class="data-list">
+        <div class="data-row">
+          <div class="row-icon">🌡</div>
+          <div class="row-body">
+            <div class="row-primary">Feels like ${Math.round(c.apparent_temperature)}°C</div>
+            <div class="row-secondary">Humidity ${c.relative_humidity_2m}%</div>
+          </div>
+        </div>
+        <div class="data-row">
+          <div class="row-icon">💨</div>
+          <div class="row-body">
+            <div class="row-primary">Wind ${Math.round(c.wind_speed_10m)} mph</div>
+            <div class="row-secondary">Area N12 · Friern Barnet</div>
+          </div>
+        </div>
+      </div>`;
+  } catch(e) {
+    container.innerHTML = `<div class="stop-error">⚠ Weather unavailable</div>`;
+  }
+}
+
+// ─── LOAD ALL ─────────────────────────────────────────────────────────────────
+async function loadAll() {
+  document.getElementById('last-updated').textContent = 'Updating…';
+  await Promise.all([loadBuses(), loadTubeStatus(), loadWeather()]);
+  document.getElementById('last-updated').textContent =
+    'Updated ' + new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+}
+
+loadAll();
+setInterval(loadAll, 60000);
+</script>
+</body>
+</html>
